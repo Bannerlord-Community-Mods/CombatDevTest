@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using TaleWorlds.Core;
@@ -13,6 +14,7 @@ using TaleWorlds.MountAndBlade.Diamond;
 using TaleWorlds.MountAndBlade.GauntletUI;
 using TaleWorlds.MountAndBlade.Test;
 using TaleWorlds.MountAndBlade.View.Missions;
+using Debug = System.Diagnostics.Debug;
 using Module = TaleWorlds.MountAndBlade.Module;
 
 namespace CombatDevTest
@@ -181,7 +183,9 @@ namespace CombatDevTest
 
         private bool _allInvulnerable = false;
         private bool everyonePassive = false;
-
+        private float agentSkill = 0f;
+        private AgentDrivenProperties StatsToSet = new AgentDrivenProperties();
+        private bool enableAIChanges = false;
         private void DrawDevCheats()
         {
             Imgui.Checkbox("Player Invulnerable", ref playerInvulnerable);
@@ -190,15 +194,57 @@ namespace CombatDevTest
             Imgui.Checkbox($"Everyone Invulnerable?: {_allInvulnerable}", ref _allInvulnerable);
             
             Imgui.Checkbox($"Everyone Passive?: {everyonePassive}", ref everyonePassive);
+            Imgui.SliderFloat("AI SKill", ref agentSkill, 0, 1);
+            foreach (DrivenProperty drivenProperty in (DrivenProperty[]) Enum.GetValues(typeof(DrivenProperty)))
+            {
+                if (drivenProperty < DrivenProperty.MountManeuver &&  drivenProperty > DrivenProperty.None )
+                {
+                    float val = StatsToSet.GetStat(drivenProperty);
+                        
+                    Imgui.SliderFloat(Enum.GetName(typeof(DrivenProperty), drivenProperty), ref val, 0, 1);
+                    StatsToSet.SetStat(drivenProperty,val);
+                }
+            }
             foreach (var agent in Mission.Current.AllAgents)
             {
+                if (agent == null)
+                {
+                    continue;
+                };
                 agent?.SetInvulnerable(_allInvulnerable);
-
+                if (agent == player)
+                {
+                    continue;
+                }
                 var component = agent?.GetComponent<AgentAIStateFlagComponent>();
                 if (component != null) component.IsPaused = everyonePassive;
+                if (enableAIChanges)
+                {
+                    var agentDrivenProperties = (AgentDrivenProperties) agent.GetType()
+                        .GetProperty("AgentDrivenProperties", BindingFlags.NonPublic | BindingFlags.Instance)
+                        ?.GetValue(agent);
                 
+
+                
+                    foreach (DrivenProperty drivenProperty in (DrivenProperty[]) Enum.GetValues(typeof(DrivenProperty)))
+                    {
+                        if (drivenProperty < DrivenProperty.MountManeuver &&  drivenProperty > DrivenProperty.None )
+                        {
+                            float val = StatsToSet.GetStat(drivenProperty);
+                        
+                            agentDrivenProperties?.SetStat(drivenProperty,val);
+                        }
+                    }
+                    
+                }
+               
+                agent.UpdateAgentProperties();
             }
 
+          
+            if (Imgui.Checkbox("Enable AI CHanges", ref enableAIChanges))
+            {
+            }
             if (Imgui.Button(" Gib Player 100 Money"))
             {
                 
