@@ -6,10 +6,9 @@ using TaleWorlds.MountAndBlade.ViewModelCollection.Multiplayer.Lobby.HostGame;
 
 namespace CombatDevTest
 {
-    public class SPHostGameVM : MPHostGameVM
+    public class SPHostGameVM : AdminPanelVM
     {
-        public SPHostGameVM(LobbyState lobbyState) : base(lobbyState)
-        {
+        public SPHostGameVM()  {
         }
 
         protected async void HandleServerStart()

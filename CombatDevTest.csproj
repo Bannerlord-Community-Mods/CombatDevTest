@@ -201,6 +201,7 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="AdminPanelVM.cs" />
         <Compile Include="HostOptionsGauntletScreen.cs" />
         <Compile Include="HostOptionsScreen.cs" />
         <Compile Include="OfflineMultiplayerGameHandler.cs" />
