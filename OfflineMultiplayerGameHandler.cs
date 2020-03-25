@@ -48,7 +48,7 @@ namespace CombatDevTest
         }
     }
 
-    internal class CombatTestMissionController : MissionView
+    internal class CombatTestMissionController : MissionView    
     {
         private static List<string> consoleCommands;
 
@@ -93,11 +93,6 @@ namespace CombatDevTest
 
             DrawReloadXMLs();
             Imgui.End();
-            Imgui.Begin("Combat Dev Managed Params Editor");
-           
-
-            DrawManagedParamsEditor();
-            Imgui.End();
             Imgui.Begin("Combat Dev Feedback Cheats");
             if (Imgui.Button(" Quit"))
             {
@@ -126,68 +121,9 @@ namespace CombatDevTest
             Imgui.EndMainThreadScope();
         }
 
-        private void DrawManagedParamsEditor()
-        {
-            
-        }
+      
 
-        private static bool CheckAssemblyReferencesThis(Assembly assembly)
-        {
-            Assembly assembly1 = typeof(CommandLineFunctionality).Assembly;
-            if (assembly1.GetName().Name == assembly.GetName().Name)
-                return true;
-            foreach (AssemblyName referencedAssembly in assembly.GetReferencedAssemblies())
-            {
-                if (referencedAssembly.Name == assembly1.GetName().Name)
-                    return true;
-            }
-
-            return false;
-        }
-
-        private void DrawConsole()
-        {
-            if (consoleCommands == null)
-            {
-                consoleCommands = new List<string>();
-                foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
-                {
-                    if (CheckAssemblyReferencesThis(assembly))
-                    {
-                        foreach (Type type in assembly.GetTypes())
-                        {
-                            foreach (MethodInfo method in type.GetMethods(
-                                BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
-                            {
-                                object[] customAttributes =
-                                    method.GetCustomAttributes(
-                                        typeof(CommandLineFunctionality.CommandLineArgumentFunction),
-                                        false);
-                                if (customAttributes != null && customAttributes.Length != 0 &&
-                                    (customAttributes[0] is CommandLineFunctionality.CommandLineArgumentFunction
-                                        argumentFunction && !(method.ReturnType != typeof(string))))
-                                {
-                                    string name = argumentFunction.Name;
-                                    string key = argumentFunction.GroupName + "." + name;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                consoleCommands.Add("game.reload_native_params");
-            }
-            else
-            {
-                consoleCommands.ForEach(command =>
-                {
-                    if (Imgui.Button(command))
-                    {
-                        DisplayMessage(CommandLineFunctionality.CallFunction(command, ""));
-                    }
-                });
-            }
-        }
+      
 
         private void DrawDevCheats()
         {
