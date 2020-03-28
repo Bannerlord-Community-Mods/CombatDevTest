@@ -201,13 +201,17 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="AdminPanelVM.cs" />
-        <Compile Include="HostOptionsGauntletScreen.cs" />
-        <Compile Include="HostOptionsScreen.cs" />
         <Compile Include="OfflineMultiplayerGameHandler.cs" />
         <Compile Include="CombatDevTestSubModule.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
-        <Compile Include="SPHostGameVM.cs" />
+    </ItemGroup>
+    <ItemGroup>
+      <Content Include="Modules\CombatDevTest\CombatDevTest.dll" />
+      <Content Include="Modules\CombatDevTest\CombatDevTest.pdb" />
+      <Content Include="Modules\CombatDevTest\SubModule.xml" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Modules\CombatDevTest\ModuleData" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
